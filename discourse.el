@@ -22,7 +22,14 @@
          (url-params-alist `(("category-id" . ,category-id)
                              ("topic-id" . ,topic-id)
                              ("username" . ,username)))
-         (url (concat base-url (s-format url-template 'aget url-params-alist)))
+         (api-key (discourse-api-api-key api))
+         (api-username (discourse-api-api-username api))
+         (url (concat base-url
+                      (s-format url-template 'aget url-params-alist)
+                      (if (and api-key api-username)
+                          (format "?api_key=%s&api_username=%s"
+                                  api-key api-username)
+                        "")))
          (response (request url
                             :type type
                             :data request-data
@@ -42,7 +49,6 @@
 (defun discourse-categories (api)
   "Get a list of categories"
   (discourse--request-response-data api "/categories.json" :extract-path '(category_list categories)))
-;; (discourse-categories (make-discourse-api))
 
 (defun discourse-get-id (data)
   "Return id from DATA which may be a category or a topic"
@@ -54,8 +60,24 @@
 
 (defun discourse-category-latest-topics (api category)
   "List the latest topics in a specific CATEGORY"
-  )
+  (discourse--request-response-data api "/c/${category-id}/l/latest.json" :category-id (discourse-get-id category) :extract-path '(topic_list topics)))
 
+(defun discourse-category-new-topics (api category)
+  "List new topics in a specific CATEGORY"
+  (discourse--request-response-data api "/c/${category-id}/l/new.json" :category-id (discourse-get-id category) :extract-path '(topic_list topics)))
+
+(defun discourse-category-top-topics (api category)
+  "List top topics in a specific CATEGORY"
+  (discourse--request-response-data api "/c/${category-id}/l/top.json" :category-id (discourse-get-id category) :extract-path '(topic_list topics)))
+
+(cl-defun discourse-category-create (api name &key (color "3c3945") (text-color "ffffff"))
+  "Create a category"
+  (discourse--request-response-data api "/categories.json"
+                                    :type "POST"
+                                    :request-data `(("name" . ,name)
+                                                    ("color" . ,color)
+                                                    ("text_color" . text-color))
+                                    :extract-path '(category_list categories)))
 ;; (discourse-category-topics-list 7)
 
 
