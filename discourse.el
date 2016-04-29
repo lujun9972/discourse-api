@@ -82,4 +82,21 @@
 
 
 
+
+;; Topics
+
+(defun discourse-latest-topics (api)
+  "Get the latest topics"
+  (discourse--request-response-data api "/latest.json" :extract-path '(topic_list topics)))
+
+(defun discourse-top-topics (api)
+  "Get the top topics"
+  (discourse--request-response-data api "/top.json" :extract-path '(topic_list topics)))
+
+(defun discourse-topic (api topic-id)
+  "Get the topic with TOPIC-ID"
+  (discourse--request-response-data api "/t/${topic-id}.json" :topic-id topic-id ))
+
+
+
 
