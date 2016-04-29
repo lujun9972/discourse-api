@@ -16,7 +16,7 @@
            (path (cdr path)))
       (discourse--extract-response-data response-data path))))
 
-(cl-defun discourse--request-response-data (api url-template &key category-id topic-id username (type "GET") request-data extract-path)
+(cl-defun discourse--request-response-data (api url-template &key category-id topic-id username  request-data extract-path)
   "使用request访问URL，并返回回应结果"
   (let* ((base-url (discourse-api-url api))
          (url-params-alist `(("category-id" . ,category-id)
@@ -24,6 +24,9 @@
                              ("username" . ,username)))
          (api-key (discourse-api-api-key api))
          (api-username (discourse-api-api-username api))
+         (type (if request-data
+                   "POST"
+                 "GET"))
          (url (concat base-url
                       (s-format url-template 'aget url-params-alist)
                       (if (and api-key api-username)
@@ -97,6 +100,42 @@
   "Get the topic with TOPIC-ID"
   (discourse--request-response-data api "/t/${topic-id}.json" :topic-id topic-id ))
 
+(defun discourse-topic-create (api title content)
+  "Create Topic"
+  (discourse--request-response-data api "/posts" :request-data `(("title" . ,title)
+                                                                 ("raw" . ,content))))
+
+(defun discourse-topic-update (api id new-id title category-id)
+  "Update Topic"
+  (discourse--request-response-data api "/t/${topic-id}" :topic-id id
+                                    :request-data `(("topic_id" . ,new-id)
+                                                    ("title" . ,title)
+                                                    ("category_id" . ,category-id))))
 
 
+
+;; Posts
 
+(defun discourse-post-create (api topic-id content)
+  "Create a post"
+  (discourse--request-response-data api "/posts"
+                                    :request-data `(("topic_id" . ,topic-id)
+                                                    ("raw" . ,content))))
+
+
+;; Notifications
+
+(defun discourse-notifications (api)
+  "List your notifications"
+  (discourse--request-response-data api "/notifications.json"))
+
+(defun discourse-notifications-mark-read (api)
+  "Mark notifications read"
+  (discourse--request-response-data api "/notifications/mark-read.json"))
+
+
+;; Private Messages
+
+(defun discourse-private-messages (api)
+  "List private messages"
+  (discourse--request-response-data api "/topics/private-messages/${username}.json" :username (discourse-api-api-username api)))
