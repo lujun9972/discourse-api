@@ -105,7 +105,7 @@
 
 (defun discourse-topic-update (api id new-id title category-id)
   "Update Topic"
-  (discourse--request-response-data api "/t/${topic-id}" :topic-id id
+  (discourse--request-response-data api "/t/${:topic-id}" :topic-id id
                                     :request-data `(("topic_id" . ,new-id)
                                                     ("title" . ,title)
                                                     ("category_id" . ,category-id))))
@@ -136,4 +136,4 @@
 
 (defun discourse-private-messages (api)
   "List private messages"
-  (discourse--request-response-data api "/topics/private-messages/${username}.json" :username (discourse-api-api-username api)))
+  (discourse--request-response-data api "/topics/private-messages/${:username}.json" :username (discourse-api-api-username api)))
