@@ -5,7 +5,7 @@
 (cl-defstruct discourse-api
   (url "http://forum.emacs-china.org")
   api-key
-  api-username)
+  (api-username user-login-name))
 
 (defun discourse--extract-response-data (response-data path)
   "Extract data from RESPONSE-DATA according PATH which is a string list"
