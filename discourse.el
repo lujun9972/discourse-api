@@ -4,6 +4,10 @@
 
 ;; Author: DarkSun <lujun9972@gmail.com>
 ;; Keywords: lisp, discourse
+;; Created: 2016-07-01
+;; Version: 0.1
+;; Package-Requires: ((cl-lib "0.5") (request "0.2")(s "20160508.2357"))
+;; URL: https://github.com/lujun9972/discourse.el
 
 ;; This file is NOT part of GNU Emacs.
 
