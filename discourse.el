@@ -1,3 +1,38 @@
+;;; discourse.el --- discourse api
+
+;; Copyright (C) 2004-2016 DarkSun <lujun9972@gmail.com>.
+
+;; Author: DarkSun <lujun9972@gmail.com>
+;; Keywords: lisp, discourse
+
+;; This file is NOT part of GNU Emacs.
+
+;; This program is free software; you can redistribute it and/or modify
+;; it under the terms of the GNU General Public License as published by
+;; the Free Software Foundation, either version 3 of the License, or
+;; (at your option) any later version.
+
+;; This program is distributed in the hope that it will be useful,
+;; but WITHOUT ANY WARRANTY; without even the implied warranty of
+;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+;; GNU General Public License for more details.
+
+;; You should have received a copy of the GNU General Public License
+;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+;;; Source code
+;;
+;; discourse's code can be found here:
+;;   http://github.com/lujun9972/discourse.el
+
+;;; Commentary:
+
+;; Discourse is a discourse api library
+;;
+
+
+;;; Code:
+
 (require 'cl-lib)
 (require 'request)
 (require 's)
@@ -100,10 +135,11 @@
   "Get the topic with TOPIC-ID"
   (discourse--request-response-data api "/t/${topic-id}.json" :topic-id topic-id ))
 
-(defun discourse-topic-create (api title content)
+(defun discourse-topic-create (api title content category-id)
   "Create Topic"
   (discourse--request-response-data api "/posts" :request-data `(("title" . ,title)
-                                                                 ("raw" . ,content))))
+                                                                 ("raw" . ,content)
+                                                                 ("category" . ,category-id))))
 
 (defun discourse-topic-update (api id new-id title category-id)
   "Update Topic"
@@ -139,3 +175,5 @@
 (defun discourse-private-messages (api)
   "List private messages"
   (discourse--request-response-data api "/topics/private-messages/${username}.json" :username (discourse-api-api-username api)))
+
+(provide 'discourse)
