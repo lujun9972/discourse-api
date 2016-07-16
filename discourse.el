@@ -7,7 +7,7 @@
 ;; Created: 2016-07-01
 ;; Version: 0.1
 ;; Package-Requires: ((cl-lib "0.5") (request "0.2")(s "20160508.2357"))
-;; URL: https://github.com/lujun9972/discourse.el
+;; URL: https://github.com/lujun9972/discourse-api
 
 ;; This file is NOT part of GNU Emacs.
 
@@ -27,7 +27,7 @@
 ;;; Source code
 ;;
 ;; discourse's code can be found here:
-;;   http://github.com/lujun9972/discourse.el
+;;   http://github.com/lujun9972/discourse-api
 
 ;;; Commentary:
 
