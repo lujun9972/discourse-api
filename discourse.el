@@ -42,7 +42,7 @@
 (require 's)
 
 (cl-defstruct discourse-api
-  (url "http://forum.emacs-china.org")
+  url
   api-key
   api-username)
 
