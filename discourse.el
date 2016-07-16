@@ -55,19 +55,17 @@
            (path (cdr path)))
       (discourse--extract-response-data response-data path))))
 
-(cl-defun discourse--request-response-data (api url-template &key category-id topic-id username  request-data extract-path)
+(cl-defun discourse--request-response-data (api url-template &rest url-params-plist &key  request-data extract-path &allow-other-keys)
   "使用request访问URL，并返回回应结果"
   (let* ((base-url (discourse-api-url api))
-         (url-params-alist `(("category-id" . ,category-id)
-                             ("topic-id" . ,topic-id)
-                             ("username" . ,username)))
          (api-key (discourse-api-api-key api))
          (api-username (discourse-api-api-username api))
          (type (if request-data
                    "POST"
                  "GET"))
          (url (concat base-url
-                      (s-format url-template 'aget url-params-alist)
+                      (s-format url-template (lambda (prop plist)
+                                               (plist-get plist (intern prop))) url-params-plist)
                       (if (and api-key api-username)
                           (format "?api_key=%s&api_username=%s"
                                   api-key api-username)
@@ -98,19 +96,19 @@
 
 (defun discourse-category-topics (api category)
   "List topics in a specific CATEGORY"
-  (discourse--request-response-data api "/c/${category-id}.json" :category-id (discourse-get-id category) :extract-path '(topic_list topics)))
+  (discourse--request-response-data api "/c/${:category-id}.json" :category-id (discourse-get-id category) :extract-path '(topic_list topics)))
 
 (defun discourse-category-latest-topics (api category)
   "List the latest topics in a specific CATEGORY"
-  (discourse--request-response-data api "/c/${category-id}/l/latest.json" :category-id (discourse-get-id category) :extract-path '(topic_list topics)))
+  (discourse--request-response-data api "/c/${:category-id}/l/latest.json" :category-id (discourse-get-id category) :extract-path '(topic_list topics)))
 
 (defun discourse-category-new-topics (api category)
   "List new topics in a specific CATEGORY"
-  (discourse--request-response-data api "/c/${category-id}/l/new.json" :category-id (discourse-get-id category) :extract-path '(topic_list topics)))
+  (discourse--request-response-data api "/c/${:category-id}/l/new.json" :category-id (discourse-get-id category) :extract-path '(topic_list topics)))
 
 (defun discourse-category-top-topics (api category)
   "List top topics in a specific CATEGORY"
-  (discourse--request-response-data api "/c/${category-id}/l/top.json" :category-id (discourse-get-id category) :extract-path '(topic_list topics)))
+  (discourse--request-response-data api "/c/${:category-id}/l/top.json" :category-id (discourse-get-id category) :extract-path '(topic_list topics)))
 
 (cl-defun discourse-category-create (api name &key (color "3c3945") (text-color "ffffff"))
   "Create a category"
@@ -137,7 +135,7 @@
 
 (defun discourse-topic (api topic-id)
   "Get the topic with TOPIC-ID"
-  (discourse--request-response-data api "/t/${topic-id}.json" :topic-id topic-id ))
+  (discourse--request-response-data api "/t/${:topic-id}.json" :topic-id topic-id ))
 
 (defun discourse-topic-create (api title content category-id)
   "Create Topic"
