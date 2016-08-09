@@ -80,12 +80,6 @@
                                                     data)))))
     (discourse--extract-response-data (request-response-data response) extract-path)))
 
-(cl-defun discourse--select-from-alist (alist &optional (prompt ": "))
-  ""
-  (let* ((keys (mapcar #'car alist))
-         (key (completing-read prompt keys)))
-    (cdr (assoc-string key alist))))
-
 (defun discourse-categories (api)
   "Get a list of categories."
   (discourse--request-response-data api "/categories.json" :extract-path '(category_list categories)))
