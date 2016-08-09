@@ -105,7 +105,7 @@
   (discourse--request-response-data api "/c/${:category-id}/l/top.json" :category-id (discourse-get-id category) :extract-path '(topic_list topics)))
 
 (cl-defun discourse-category-create (api name &key (color "3c3945") (text-color "ffffff"))
-  "Create a category."
+  "Create a category whose name is NAME"
   (discourse--request-response-data api "/categories.json"
                                     :type "POST"
                                     :request-data `(("name" . ,name)
@@ -132,24 +132,24 @@
   (discourse--request-response-data api "/t/${:topic-id}.json" :topic-id topic-id ))
 
 (defun discourse-topic-create (api title content category-id)
-  "Create Topic."
+  "Create Topic whose title is TITLE, content is CONTENT and category specified by CATEGORY-ID."
   (discourse--request-response-data api "/posts" :request-data `(("title" . ,title)
                                                                  ("raw" . ,content)
                                                                  ("category" . ,category-id))))
 
-(defun discourse-topic-update (api id new-id title category-id)
-  "Update Topic."
-  (discourse--request-response-data api "/t/${topic-id}" :topic-id id
-                                    :request-data `(("topic_id" . ,new-id)
-                                                    ("title" . ,title)
-                                                    ("category_id" . ,category-id))))
+;; (defun discourse-topic-update (api id new-id title category-id)
+;;   "Update Topic."
+;;   (discourse--request-response-data api "/t/${topic-id}" :topic-id id
+;;                                     :request-data `(("topic_id" . ,new-id)
+;;                                                     ("title" . ,title)
+;;                                                     ("category_id" . ,category-id))))
 
 
 
 ;; Posts
 
 (defun discourse-post-create (api topic-id content)
-  "Create a post."
+  "post a reply to a topic which specified by TOPIC-ID with content to be CONTENT."
   (discourse--request-response-data api "/posts"
                                     :request-data `(("topic_id" . ,topic-id)
                                                     ("raw" . ,content))))
@@ -171,8 +171,6 @@
 (defun discourse-private-messages (api)
   "List private messages."
   (discourse--request-response-data api "/topics/private-messages/${username}.json" :username (discourse-api-api-username api)))
-
-(provide 'discourse)
 
 (provide 'discourse)
 
