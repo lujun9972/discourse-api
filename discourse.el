@@ -85,8 +85,10 @@
   (discourse--request-response-data api "/categories.json" :extract-path '(category_list categories)))
 
 (defun discourse-get-id (data)
-  "Return id from DATA which may be a category or a topic."
-  (discourse--extract-response-data data '(id)))
+  "Return id from DATA which may be a category or a topic or an id already."
+  (if (listp data)
+      (discourse--extract-response-data data '(id))
+    data))
 
 (defun discourse-category-topics (api category)
   "List topics in a specific CATEGORY."
@@ -127,9 +129,9 @@
   "Get the top topics."
   (discourse--request-response-data api "/top.json" :extract-path '(topic_list topics)))
 
-(defun discourse-topic (api topic-id)
-  "Get the topic with TOPIC-ID."
-  (discourse--request-response-data api "/t/${:topic-id}.json" :topic-id topic-id ))
+(defun discourse-topic (api topic)
+  "Get the topic with TOPIC."
+  (discourse--request-response-data api "/t/${:topic-id}.json" :topic-id (discourse-get-id topic) ))
 
 (defun discourse-topic-create (api title content category-id)
   "Create Topic whose title is TITLE, content is CONTENT and category specified by CATEGORY-ID."
@@ -148,10 +150,10 @@
 
 ;; Posts
 
-(defun discourse-post-create (api topic-id content)
-  "post a reply to a topic which specified by TOPIC-ID with content to be CONTENT."
+(defun discourse-post-create (api topic content)
+  "post a reply to a topic which specified by TOPIC with content to be CONTENT."
   (discourse--request-response-data api "/posts"
-                                    :request-data `(("topic_id" . ,topic-id)
+                                    :request-data `(("topic_id" . ,(discourse-get-id topic-id))
                                                     ("raw" . ,content))))
 
 
