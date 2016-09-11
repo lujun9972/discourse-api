@@ -44,7 +44,7 @@
 (cl-defstruct discourse-api
   url
   api-key
-  api-username)
+  (api-username user-login-name))
 
 (defun discourse--extract-response-data (response-data path)
   "Extract data from RESPONSE-DATA according PATH which is a string list."
@@ -139,12 +139,12 @@
                                                                  ("raw" . ,content)
                                                                  ("category" . ,category-id))))
 
-;; (defun discourse-topic-update (api id new-id title category-id)
-;;   "Update Topic."
-;;   (discourse--request-response-data api "/t/${topic-id}" :topic-id id
-;;                                     :request-data `(("topic_id" . ,new-id)
-;;                                                     ("title" . ,title)
-;;                                                     ("category_id" . ,category-id))))
+(defun discourse-topic-update (api id new-id title category-id)
+  "Update Topic"
+  (discourse--request-response-data api "/t/${:topic-id}" :topic-id id
+                                    :request-data `(("topic_id" . ,new-id)
+                                                    ("title" . ,title)
+                                                    ("category_id" . ,category-id))))
 
 
 
@@ -171,8 +171,8 @@
 ;; Private Messages
 
 (defun discourse-private-messages (api)
-  "List private messages."
-  (discourse--request-response-data api "/topics/private-messages/${username}.json" :username (discourse-api-api-username api)))
+  "List private messages"
+  (discourse--request-response-data api "/topics/private-messages/${:username}.json" :username (discourse-api-api-username api)))
 
 (provide 'discourse)
 
